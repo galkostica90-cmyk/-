@@ -14,11 +14,11 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.13.5'
       - name: Install dependencies
-        run: flutter pub get
+        run: cd app/flutter && flutter pub get
       - name: Run tests
-        run: flutter test --no-pub
+        run: cd app/flutter && flutter test --no-pub
 
   build-android:
     runs-on: ubuntu-latest
@@ -28,19 +28,27 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
-      - name: Install dependencies
-        run: flutter pub get
-      - name: Ensure android files exist
+          flutter-version: '3.13.5'
+      - name: Ensure platform folders
         run: |
-          if [ ! -d "android" ]; then flutter create . || true; fi
+          cd app/flutter
+          echo "Recreating platform folders (forced) to fix unsupported Gradle project"
+          flutter create -t app . --overwrite || true
+          flutter pub get || true
       - name: Build AAB
-        run: flutter build appbundle --release
+        run: cd app/flutter && flutter build appbundle --release
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
           name: appbundle
-          path: build/app/outputs/bundle/release/app-release.aab
+          path: app/flutter/build/app/outputs/bundle/release/app-release.aab
+      - name: Build APK
+        run: cd app/flutter && flutter build apk --release
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: app/flutter/build/app/outputs/flutter-apk/app-release.apk
 
   build-ios:
     runs-on: macos-latest
@@ -50,13 +58,19 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.13.5'
+      - name: Ensure platform folders
+        run: |
+          cd app/flutter
+          echo "Recreating platform folders (forced) to fix unsupported Gradle project"
+          flutter create -t app . --overwrite || true
+          flutter pub get || true
       - name: Install dependencies
-        run: flutter pub get
+        run: cd app/flutter && flutter pub get
       - name: Build iOS
-        run: flutter build ipa --export-options-plist=ios/ExportOptions.plist || true
+        run: cd app/flutter && flutter build ipa --export-options-plist=ios/ExportOptions.plist || true
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
           name: ipa
-          path: build/ios/ipa
+          path: app/flutter/build/ios/ipa
