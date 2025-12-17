@@ -14,7 +14,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.13.5'
       - name: Install dependencies
         run: flutter pub get
       - name: Run tests
@@ -28,7 +28,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.13.5'
       - name: Install dependencies
         run: flutter pub get
       - name: Build AAB
@@ -47,7 +47,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.13.5'
       - name: Install dependencies
         run: flutter pub get
       - name: Build iOS
