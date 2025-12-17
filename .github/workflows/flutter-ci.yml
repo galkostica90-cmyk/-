@@ -30,6 +30,9 @@ jobs:
         with:
           flutter-version: '3.13.5'
       - name: Ensure platform folders (create temp scaffold + copy)
+        env:
+          APP_PACKAGE_NAME: ${{ secrets.APP_PACKAGE_NAME || 'com.company.attendance' }}
+          APP_BUNDLE_ID: ${{ secrets.APP_BUNDLE_ID || 'com.company.attendance' }}
         run: |
           cd app
           echo "Recreating platform folders in temporary scaffold and copying into app/flutter to fix unsupported Gradle project"
@@ -41,6 +44,10 @@ jobs:
           cp -a tmp_scaffold/.gitignore flutter/ || true
           cp -a tmp_scaffold/.metadata flutter/ || true
           rm -rf tmp_scaffold || true
+          # set identifiers if script present
+          if [ -x app/scripts/set_identifiers.sh ] || [ -f app/scripts/set_identifiers.sh ]; then
+            bash app/scripts/set_identifiers.sh "$APP_PACKAGE_NAME" "$APP_BUNDLE_ID" || true
+          fi
           cd flutter && flutter pub get || true
       - name: List platform files
         run: |
