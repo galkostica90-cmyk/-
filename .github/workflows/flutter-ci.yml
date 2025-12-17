@@ -16,9 +16,9 @@ jobs:
         with:
           flutter-version: '3.13.5'
       - name: Install dependencies
-        run: flutter pub get
+        run: cd app/flutter && flutter pub get
       - name: Run tests
-        run: flutter test --no-pub
+        run: cd app/flutter && flutter test --no-pub
 
   build-android:
     runs-on: ubuntu-latest
@@ -30,14 +30,14 @@ jobs:
         with:
           flutter-version: '3.13.5'
       - name: Install dependencies
-        run: flutter pub get
+        run: cd app/flutter && flutter pub get
       - name: Build AAB
-        run: flutter build appbundle --release
+        run: cd app/flutter && flutter build appbundle --release
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
           name: appbundle
-          path: build/app/outputs/bundle/release/app-release.aab
+          path: app/flutter/build/app/outputs/bundle/release/app-release.aab
 
   build-ios:
     runs-on: macos-latest
@@ -49,11 +49,11 @@ jobs:
         with:
           flutter-version: '3.13.5'
       - name: Install dependencies
-        run: flutter pub get
+        run: cd app/flutter && flutter pub get
       - name: Build iOS
-        run: flutter build ipa --export-options-plist=ios/ExportOptions.plist || true
+        run: cd app/flutter && flutter build ipa --export-options-plist=ios/ExportOptions.plist || true
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
           name: ipa
-          path: build/ios/ipa
+          path: app/flutter/build/ios/ipa
