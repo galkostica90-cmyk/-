@@ -1,7 +1,7 @@
 name: attendance_app
 description: מערכת שעון נוכחות ודיווח עבור עובדי החברה
 publish_to: 'none'
-version: 0.1.0
+version: 0.1.1+2
 
 environment:
   sdk: ">=2.19.0 <3.0.0"
