@@ -29,6 +29,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool _checkedIn = false;
   late SharedPreferences _prefs;
+  List<AttendanceEntry> _recentEntries = [];
 
   @override
   void initState() {
@@ -41,6 +42,12 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _checkedIn = _prefs.getBool('checked_in') ?? false;
     });
+    await _loadEntries();
+  }
+
+  Future<void> _loadEntries() async {
+    final rows = await DB.allEntries();
+    setState(() => _recentEntries = rows.reversed.take(5).toList());
   }
 
   Future<void> _toggleCheck() async {
@@ -50,29 +57,57 @@ class _HomePageState extends State<HomePage> {
     await _prefs.setBool('checked_in', _checkedIn);
     // record to DB
     await DB.insertEntry(AttendanceEntry(timestamp: DateTime.now(), checkedIn: _checkedIn));
+    await _loadEntries();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Attendance')),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              _checkedIn ? 'Checked in' : 'Checked out',
-              style: const TextStyle(fontSize: 24),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _toggleCheck,
-              child: Text(_checkedIn ? 'Check out' : 'Check in'),
+              _checkedIn ? 'מצב: נכנס' : 'מצב: לא נכנס',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const HistoryPage())),
-              child: const Text('History'),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _toggleCheck,
+                    child: Text(_checkedIn ? 'Check out' : 'Check in'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const HistoryPage())),
+                  child: const Text('History'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const Divider(),
+            const SizedBox(height: 8),
+            const Text('Recent activity', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            Expanded(
+              child: _recentEntries.isEmpty
+                  ? const Center(child: Text('No recent entries'))
+                  : ListView.builder(
+                      itemCount: _recentEntries.length,
+                      itemBuilder: (context, i) {
+                        final e = _recentEntries[i];
+                        return ListTile(
+                          leading: Icon(e.checkedIn ? Icons.login : Icons.logout),
+                          title: Text(e.checkedIn ? 'Check in' : 'Check out'),
+                          subtitle: Text(e.timestamp.toLocal().toString()),
+                        );
+                      },
+                    ),
             ),
           ],
         ),
