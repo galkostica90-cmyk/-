@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   bool _checkedIn = false;
   late SharedPreferences _prefs;
   List<AttendanceEntry> _recentEntries = [];
+  static const String _buildMarker = 'DASHBOARD_VER_1';
 
   @override
   void initState() {
@@ -95,19 +96,33 @@ class _HomePageState extends State<HomePage> {
             const Text('Recent activity', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             Expanded(
-              child: _recentEntries.isEmpty
-                  ? const Center(child: Text('No recent entries'))
-                  : ListView.builder(
-                      itemCount: _recentEntries.length,
-                      itemBuilder: (context, i) {
-                        final e = _recentEntries[i];
-                        return ListTile(
-                          leading: Icon(e.checkedIn ? Icons.login : Icons.logout),
-                          title: Text(e.checkedIn ? 'Check in' : 'Check out'),
-                          subtitle: Text(e.timestamp.toLocal().toString()),
-                        );
-                      },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: _recentEntries.isEmpty
+                        ? const Center(child: Text('No recent entries'))
+                        : ListView.builder(
+                            itemCount: _recentEntries.length,
+                            itemBuilder: (context, i) {
+                              final e = _recentEntries[i];
+                              return ListTile(
+                                leading: Icon(e.checkedIn ? Icons.login : Icons.logout),
+                                title: Text(e.checkedIn ? 'Check in' : 'Check out'),
+                                subtitle: Text(e.timestamp.toLocal().toString()),
+                              );
+                            },
+                          ),
+                  ),
+                  const SizedBox(height: 8),
+                  Center(
+                    child: Text(
+                      _buildMarker,
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
                     ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
