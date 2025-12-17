@@ -1,0 +1,10 @@
+{
+  "name": "project-sample",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "jest --runInBand"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  }
+}
