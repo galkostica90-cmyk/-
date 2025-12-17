@@ -1,0 +1,30 @@
+default_platform(:android)
+
+platform :android do
+  desc 'Build AAB and upload to internal track'
+  lane :beta do
+    gradle(task: 'bundleRelease')
+    upload_to_play_store(track: 'internal')
+  end
+
+  desc 'Build and upload release to Play Store'
+  lane :release do
+    gradle(task: 'bundleRelease')
+    upload_to_play_store(track: 'production')
+  end
+end
+
+platform :ios do
+  desc 'Build and upload to TestFlight'
+  lane :beta do
+    build_app(scheme: 'Runner')
+    upload_to_testflight
+  end
+
+  desc 'Release to App Store'
+  lane :release do
+    capture_screenshots
+    build_app(scheme: 'Runner')
+    deliver(force: true)
+  end
+end
