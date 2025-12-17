@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env
+.env.*
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Node
+node_modules/
+
+# Editor/OS
+.vscode/
+.idea/
+.DS_Store
+*.log
+
+# Docker
+docker-compose.override.yml
+
+# Others
+coverage/
+htmlcov/
+.pytest_cache/
