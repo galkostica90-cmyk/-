@@ -29,12 +29,24 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.13.5'
-      - name: Ensure platform folders
+      - name: Ensure platform folders (create temp scaffold + copy)
         run: |
-          cd app/flutter
-          echo "Recreating platform folders (forced, retry) to fix unsupported Gradle project"
-          flutter create -t app . --overwrite || true
-          flutter pub get || true
+          cd app
+          echo "Recreating platform folders in temporary scaffold and copying into app/flutter to fix unsupported Gradle project"
+          rm -rf tmp_scaffold || true
+          flutter create -t app tmp_scaffold --overwrite || true
+          # copy only platform files (android/ios and gradle files) into app/flutter
+          rsync -a tmp_scaffold/android/ flutter/android/ || true
+          rsync -a tmp_scaffold/ios/ flutter/ios/ || true
+          cp -a tmp_scaffold/.gitignore flutter/ || true
+          cp -a tmp_scaffold/.metadata flutter/ || true
+          rm -rf tmp_scaffold || true
+          cd flutter && flutter pub get || true
+      - name: List platform files
+        run: |
+          ls -la app/flutter
+          ls -la app/flutter/android || true
+          ls -la app/flutter/ios || true
       - name: Install dependencies
         run: cd app/flutter && flutter pub get
       - name: Build AAB
