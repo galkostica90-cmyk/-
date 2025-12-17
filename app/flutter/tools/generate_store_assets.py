@@ -44,8 +44,14 @@ print('Generating icon assets...')
 make_image(os.path.join(OUT_ICONS, 'icon_1024.png'), (1024, 1024), 'Attendance', font_size=180)
 make_image(os.path.join(OUT_ICONS, 'icon_512.png'), (512, 512), 'Attendance', font_size=96)
 
-# Also copy a placeholder into app assets
-icon_dest = 'app/flutter/assets/icon_large.png'
-make_image(icon_dest, (1024, 1024), 'Attendance', font_size=180)
+# Overwrite placeholder with generated clock icon if exists
+clock_asset = 'app/flutter/assets/icon_clock.png'
+if os.path.exists(clock_asset):
+    from shutil import copyfile
+    copyfile(clock_asset, 'app/flutter/assets/icon_large.png')
+    copyfile(clock_asset, 'app/flutter/assets/icon.png')
+else:
+    make_image('app/flutter/assets/icon_large.png', (1024, 1024), 'Attendance', font_size=180)
+    make_image('app/flutter/assets/icon.png', (512, 512), 'Attendance', font_size=96)
 
 print('Done. Place final screenshots and icons in fastlane/metadata/... then run fastlane deliver / supply to upload.')
