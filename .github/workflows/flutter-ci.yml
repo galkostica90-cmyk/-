@@ -29,6 +29,12 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.13.5'
+      - name: Ensure platform folders
+        run: |
+          cd app/flutter
+          echo "Recreating platform folders (forced, retry) to fix unsupported Gradle project"
+          flutter create -t app . --overwrite || true
+          flutter pub get || true
       - name: Install dependencies
         run: cd app/flutter && flutter pub get
       - name: Build AAB
