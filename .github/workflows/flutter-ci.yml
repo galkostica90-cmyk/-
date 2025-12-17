@@ -31,6 +31,9 @@ jobs:
           flutter-version: 'stable'
       - name: Install dependencies
         run: flutter pub get
+      - name: Ensure android files exist
+        run: |
+          if [ ! -d "android" ]; then flutter create . || true; fi
       - name: Build AAB
         run: flutter build appbundle --release
       - name: Upload AAB artifact
