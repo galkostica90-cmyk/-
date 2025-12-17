@@ -23,3 +23,9 @@
 - Node: `package.json` + `jest` + `tests/sample.test.js` (בדיקה דומה ל‑Node).
 
 הרצתי את הבדיקות מקומית — שתיהן עוברות. אם תרצה, אוכל להרחיב את הבדיקות או להוסיף CI coverage.
+
+## אפליקציה לנייד ופרסום לחנויות 📱
+
+בניתי scaffold של אפליקציה Flutter תחת `app/flutter` (מסך Check‑In/Check‑Out, בדיקות ו‑CI) ו‑Fastlane + workflows לפרסומים.
+
+ראה `docs/RELEASE.md` ו־`docs/store_metadata/` לקבלת הוראות והנחיות לפרסום ל‑Google Play ו‑App Store; יש גם workflow ידני `Publish Mobile App` (Actions → Publish Mobile App) שמריץ Fastlane על פי הסודות שתספק.
